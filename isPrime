@@ -1,3 +1,5 @@
+// Time: Sqrt(n)
+
 bool isPrime(int n)
 {	assert(n>0);
  	if(n==1) return false;
