@@ -142,11 +142,13 @@ template<class T> void SegmentTree<T>::update(int idx, T val)
  
  
 /*
-	Note:
-		1. this is zero based indexing
+	
 	
 	How to use:
 		
 		SegmentTree<int> a([vector zero based indeing ],[identity element ],[Funcation]);
-
+		
+	Note:
+		1. this vector must zero based indexing
+		2. for query use 1 based indexing
 */ 
