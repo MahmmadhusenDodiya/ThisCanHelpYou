@@ -9,6 +9,11 @@
 #define right(i) (2*i + 2)
 #define parent(i) ((i-1)/2)
 
+int Fun(int a,int b)
+{
+	
+}
+
 template<class T>
 class SegmentTree
 {
