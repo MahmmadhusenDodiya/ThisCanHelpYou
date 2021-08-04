@@ -4,11 +4,6 @@
 #define right(i) (2*i + 2)
 #define parent(i) ((i-1)/2)
 
-int Fun(int a,int b)
-{
-
-}
-
 template<class T>
 class SegmentTree
 {
@@ -134,12 +129,14 @@ template<class T> void SegmentTree<T>::update(int idx, T val)
 }
 
 #endif // SEGMENTTREE_H
+ 
+ 
+/*
+	Note:
+		1. this is zero based indexing
+	
+	How to use:
+		
+		SegmentTree<int> a([vector zero based indeing ],[identity element ],[Funcation]);
 
-
-/* How to use:
-
-
-
-*/
-
-
+*/ 
