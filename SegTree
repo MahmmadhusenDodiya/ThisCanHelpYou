@@ -1,3 +1,8 @@
+// Time Complexity is  For Building :NlogN 
+// LogN time For query
+
+
+
 #ifndef SEGMENTTREE_H
 #define SEGMENTTREE_H
 #define left(i) (2*i + 1)
