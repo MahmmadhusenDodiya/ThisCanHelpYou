@@ -1,0 +1,57 @@
+class BIT{
+private:	
+		vector<int> a;     // BIT value
+		vector<int> val;  //Orignal value
+		
+		
+		void Update(int index,int x)
+		{
+			int n=a.size();
+			while(index<n)
+			{
+				a[index]+=x;
+				index+=((index&(-index)));
+			}
+		}
+		
+		int q(int x)
+		{
+			int ans=0;
+			while(x>0)
+			{
+				ans+=a[x];
+				x-=(x&(-x));
+			}
+			return ans;
+		}
+public: 
+		
+		
+		void Build(vector<int> b)
+		{   
+		    // b vector is zero base indeing
+			//everything other than this is one base indexing
+			int n=b.size();
+			a.resize(n+1,0);
+			val.resize(n+1);
+			for(int i=0;i<n;i++)
+			{
+				val[i+1]=b[i];
+			}
+			for(int i=1;i<=n;i++)
+			{
+				Update(i,b[i-1]);
+			}
+		}
+		int Range(int l,int r)
+		{
+			return (q(r)-q(l-1));
+		}
+		void PointUpdate(int ind,int value)
+		{
+			int add=value-val[ind];
+			val[ind]=value;
+			Update(ind,add);
+		}
+		
+};
