@@ -1,0 +1,138 @@
+#include <bits/stdc++.h>
+#define int long long int
+#define pb push_back
+using namespace std;
+
+
+const int N=10000+5;
+
+vector<int> a[N];
+int h[N];
+int par[N];
+int LCA[N][30];
+
+void dfs(int node,int hi,int p)
+{
+	par[node]=p;
+	h[node]=hi;
+	
+	for(auto it:a[node])
+	{
+		if(it==p)
+		{
+			//do nothing
+		}
+		else
+		{
+			dfs(it,hi+1,node);
+		}
+	}
+	
+}
+
+int L(int a,int b)
+{
+	if(h[a]>h[b]) swap(a,b);
+	int d=h[b]-h[a];
+	while(d>0)
+	{
+		int i=log2(d);
+		b=LCA[b][i];
+		d-=(1ll<<i);
+	}
+	
+	if(a==b) return a;
+	for(int i=25;i>=0;i--)
+	{
+		if(LCA[a][i]!=-1 and LCA[b][i]!=-1 and LCA[a][i]!=LCA[b][i])
+		{
+			a=LCA[a][i];
+			b=LCA[b][i];
+		}
+		
+	}
+	
+	return par[a];	
+}
+
+int32_t main()
+{	    
+	ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+	int R=1;
+	int t;
+	cin>>t;
+	while(t--!=0)
+	{
+	
+	
+	int n;
+	cin>>n;
+	
+	for(int i=0;i<=n;i++)
+	{
+		a[i].clear();
+		
+	}
+	
+	for(int i=1;i<=n;i++)
+	{
+		int w;
+		cin>>w;
+		while(w--!=0)
+		{
+			int x;
+			cin>>x;
+			//x++;
+			a[i].pb(x);
+			a[x].pb(i);
+		}
+	}
+	
+	
+	
+	dfs(1,0,-1);
+	memset(LCA,-1,sizeof(LCA));
+	
+	for(int i=1;i<=n;i++)
+	{
+		for(int j=0;j<=25;j++)
+		{
+			int k=(1ll<<j);
+			int node=i;
+			if(h[node]>=k)
+			{
+				if(j==0)
+				{
+					LCA[node][j]=par[node];
+				}
+				else
+				{
+					int pp=LCA[node][j-1];
+					
+					LCA[node][j]=LCA[pp][j-1];
+				}
+			}
+			else
+			{
+				// do nothing
+			}
+		}
+	}
+	
+	cout<<"Case "<<R<<":\n";
+	int q;
+	cin>>q;
+	while(q--!=0)
+	{
+		int x,y;
+		cin>>x>>y;
+		//x++;
+		//y++;
+		cout<<L(x,y)<<"\n";
+	}
+	R++;
+	
+	}
+	return 0;
+}
