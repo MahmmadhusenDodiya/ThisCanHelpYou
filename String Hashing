@@ -1,0 +1,189 @@
+//https://cses.fi/problemset/task/1111/
+//Verdict : TLE Approch is Correct
+
+#include<bits/stdc++.h>
+#define int long long int
+using namespace std;
+
+const int N=1000000+5;
+int M=1000000000+7;
+
+
+int p=31;
+int nn;
+int P[N+5];
+int Inv[N+5];
+int hf[N+5];
+int hb[N+5];
+
+
+int power(int b,int p,int mod)
+{
+	int ans=1;
+	if(p==0) return ans;
+	else
+	{
+		if(p%2==0) 
+		{
+			int x=power(b,p/2,mod);
+			return (x*x)%M;
+		}
+		else
+		{
+			int x=power(b,(p-1)/2,mod);
+			int y=x*x;
+			y=y%mod;
+			return (y*b)%mod;
+		}
+	}
+}
+
+void Build(string s)
+{
+	P[0]=1;
+	Inv[0]=1;
+	for(int i=1;i<=N;i++)
+	{
+		P[i]=(P[i-1]*p)%M;
+		
+	}
+	// Master Strock 
+	int X=power(p,M-2,M);
+	for(int i=1;i<=N;i++)
+	{
+		Inv[i]=(Inv[i-1]*X)%M;
+		
+	}
+	/*
+		We can do modulo inverse preprocessing in O(N) time. 
+		inv[i] = p ^ (-i) 
+         = (inv[i-1] * p ^ (-1)) % mod 
+		and p ^ (-1) = power(p, mod-2). (since mod is prime number)
+
+	*/
+	// _______________________________
+	
+	for(int i=0;i<s.size();i++)
+	{
+		int val=(int)(s[i]-'a'+1);
+		hf[i]=(((i>0)?hf[i-1]:0)+(val*P[i]))%M;
+	}
+	int k=0;
+	for(int i=s.size()-1;i>=0;i--,k++)
+	{
+		int val=(int)(s[i]-'a'+1);
+		hb[i]=(((i==(s.size()-1))?0:hb[i+1])+(val*P[k]))%M;
+	}
+	
+}
+
+int HashF(int l,int r)
+{
+	int ans=hf[r];
+	if(l!=0) ans=(ans-hf[l-1]+M)%M;
+	
+	ans=(ans*Inv[l])%M;
+	return ans;
+}
+int HashB(int l,int r)
+{
+	int ans=hb[l];
+	if(r!=(nn-1)) ans=(ans-hb[r+1]+M)%M;
+	int leff=nn-1-r;
+	//cout<<"zleff="<<leff<<"\n";
+	ans=(ans*Inv[leff])%M;
+	return ans;
+}
+
+int ind=0;
+int maxi=1;
+
+string Find(string &s,int x)
+{
+	string ans="";
+	//cout<<"x="<<x<<"\n";
+	for(int i=0;i+x-1<nn;i++)
+	{
+		//cout<<"hf="<<HashF(i,i+x-1)<<" hb="<<HashB(i,i+x-1)<<"\n";
+		if(HashF(i,i+x-1)==HashB(i,i+x-1))
+		{
+			ans=s.substr(i,x);
+			return ans;
+		}
+	}
+	
+	
+	return ans;
+}
+
+
+int32_t main()
+{	
+	ios_base::sync_with_stdio(false);
+ 	cin.tie(NULL);
+    
+    
+    
+	string str;
+	cin>>str;
+	
+	Build(str);
+	
+	int n=str.size();
+	nn=n;
+	int s=1;
+	int e=(n/2);
+	int ans=0;
+	string a="";
+	while(s<=e)
+	{
+		int mid=(s+e)/2;
+		string temp=Find(str,2*mid);
+		//cout<<"mid="<<mid<<" temp="<<temp<<"\n";
+		if(temp!="")
+		{
+			if(mid*2>=ans)
+			{
+				ans=mid*2;
+				a=temp;
+			}
+			s=mid+1;
+		}
+		else
+		{
+			e=mid-1;
+		}
+	}
+	//cout<<"a="<<a<<"\n";
+	
+	
+	string b="";
+	s=0;
+	e=n/2;
+	if(n%2==0) e--;
+	ans=0;
+	while(s<=e)
+	{
+		int mid=(s+e)/2;
+		string temp=Find(str,2*mid+1);
+		//cout<<"mid="<<mid<<" temp="<<temp<<"\n";
+		if(temp!="")
+		{
+			if((mid*2+1)>=ans)
+			{
+				ans=(1+mid*2);
+				b=temp;
+			}
+			s=mid+1;
+		}
+		else
+		{
+			e=mid-1;
+		}
+	}
+	
+	if(a.size()>b.size()) cout<<a;
+	else cout<<b<<"\n";
+//	cout<<HashF(0,3)<<"  hf\n";
+//    cout<<HashB(0,3)<<"  hb \n";
+}
