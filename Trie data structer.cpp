@@ -56,6 +56,20 @@ int search(Node *root,string s)
 	return (temp->cnt);
 }
 
+void remove(Node *root,string s)
+{
+	Node *temp=root;
+	for(int i=0;i<s.size();i++)
+	{
+		int index=s[i]-'a';
+		
+		temp=temp->ar[index];
+	
+		temp->cnt--;
+	}
+	temp->eow--;
+}
+
 
 int32_t main()
 {	
