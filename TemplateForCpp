@@ -1,0 +1,137 @@
+TEMPLATE:
+https://leetcode.com/contest/weekly-contest-374/problems/count-the-number-of-infection-sequences/
+---------------------------------------------------
+
+class Solution {
+public:
+    long long int F[100000+5];
+    const long long int MOD=1000000000+7;
+    long long int multi(long long int a,long long int b)
+    {
+        return ((a%MOD)*(b%MOD))%MOD;
+    }
+    long long int add(long long int a,long long int b)
+    {
+        return ((a%MOD)+(b%MOD))%MOD;
+    }
+    int sub(int a,int b)
+    {
+        return ((a%MOD)-(b%MOD)+MOD)%MOD;
+    }
+    
+    long long int powermod(long long int B, long long int power,long long int modulo)     //Fast Power
+    {
+        long long int ans=1LL;
+        while(power>0LL)
+        {
+            if(power%2LL==1LL)
+            {
+                ans=(ans*B)%modulo;
+            }
+            B=(B*B)%modulo;
+            power/=2LL;
+        }
+        return ans;
+    }
+
+    long long int modInverse(long long int n, long long int p){
+       return powermod(n,p-2,MOD);
+    }
+
+    long long int div(long long int a,long long int b)
+    {
+        return multi(a,modInverse(b,MOD));
+    }
+    
+    long long int ncr(long long int n,long long int r)
+    {
+        return div(F[n],(multi(F[n-r],F[r])));
+    }
+    
+    
+    int numberOfSequence(int n, vector<int>& sick) {
+        
+        for(int i=0;i<100000+4;i++)
+        {
+            if(i==0) F[i]=1;
+            else F[i]=multi(F[i-1],i);
+        }
+        
+        
+        long long int ans=1;
+        vector<pair<long long int,long long int> > a;
+        //val size
+        long long int temp;
+        long long int tot=0;
+        for(int i=0;i<sick.size();i++)
+        {
+            if(i==0)
+            {
+                if(sick[i]==0)
+                {
+                    
+                }
+                else
+                {
+                    tot+=sick[i];
+                }
+            }
+            else
+            {
+                cout<<"i="<<i<<"\n";
+                long long int sz=sick[i]-sick[i-1]-1;
+                cout<<"sz="<<sz<<"\n";
+                if(sz!=0) {
+                    long long int tt=0;
+                
+                    tt=add(tt,powermod(2,sz-1,MOD));
+                
+                    a.push_back({tt,sz});}
+            }
+            
+            
+            if(i==(sick.size()-1))
+            {
+                if(sick[i]!=(n-1))
+                {
+                    long long int sz=n-(sick[i]+1);
+                    long long int tt=1;
+                    a.push_back({tt,-1*sz});
+                }
+            }
+            
+        }
+        
+        int cc=0;
+        for(auto it:a)
+        {
+            cout<<"it.first="<<it.first<<" "<<it.second<<"\n";
+            
+            long long int sz=it.second;
+            sz=abs(sz);
+            tot+=sz;
+            
+            
+            //if(cc>0)
+            if(it.second>0)
+            {
+                ans=multi(ans,powermod(2,sz-1,MOD));
+                
+            }
+            
+            if(sz<0) sz=-1*sz;
+            //
+            
+            
+            cout<<"cc="<<cc<<" tot="<<tot<<" "<<sz<<" ans="<<ans<<"\n";
+           // if(cc>0)
+            ans=multi(ans,ncr(tot,sz));                                  //combine
+            
+            cout<<"tot="<<tot<<" r="<<sz<<" ncr="<<ncr(tot,sz)<<"\n";
+           cout<<"ans="<<ans<<"\n";
+            
+            cc++;
+        }
+        return ans;
+    }
+};
